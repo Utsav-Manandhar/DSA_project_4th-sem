@@ -1,4 +1,4 @@
-let int_arr = Array(50).fill().map(()=>Math.floor(50 * Math.random()));
+let int_arr = Array(200).fill().map(()=>Math.floor(200 * Math.random()));
 let sortCount =0;
 let calledOnce = false;
 let objects_arr = [];
@@ -16,7 +16,7 @@ function createVisulaizer()
         newObject.setAttribute("class" , "element");
         newObject.style.width= singleWidth;
         let numbering = document.createTextNode(String(int_arr[i]));
-        newObject.appendChild(numbering);
+       // newObject.appendChild(numbering);
         let singleHeight = (int_arr[i]/maxElement)*100 + "%";
         newObject.style.height = singleHeight;
         newObject.style.order = i;
@@ -63,7 +63,7 @@ function sleep(ms) {
     for( let i =sortCount;i<int_arr.length;i++)
     {  
         sortOnce(int_arr, i);
-        await sleep(200);
+        await sleep(20);
         //rearrangeItems();
         
     }
