@@ -1,0 +1,75 @@
+#svg-container
+{
+    display: block;
+    margin: auto;
+    position: absolute;
+}
+#main-display, #nodesSVG, #edgesSVG
+{
+    position: relative;
+    display: block;
+    margin: auto;
+    margin-top: 0px;
+    fill: green;
+    width: 1200px;
+    height: 500px;
+    background-color: antiquewhite;
+    
+    
+} 
+#main-display
+{
+    z-index: 0;
+}
+#nodesSVG
+{
+    z-index: 2;
+}
+#edgesSVG
+{
+    z-index: 1;
+}
+
+.graph-edge
+{
+   
+    
+    stroke: red;
+    stroke-width: 5;
+
+}
+
+#input-form
+{
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+}
+
+table  {
+    border: 1px solid black;
+    border-spacing: 0;
+    border-collapse: collapse;
+    padding: 3px;
+    text-align: center;
+    background-color: rgb(86, 85, 85);
+    color: #ffe600;
+}
+tr,td, th
+{
+    border: 1px solid black;
+}
+
+.input-cell 
+{
+    text-align: center;
+    background-color: #d0cdcd;
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+}
+th
+{
+    width: 24px;
+    height: 24px;
+}
