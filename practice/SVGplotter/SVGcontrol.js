@@ -22,7 +22,7 @@ let numberOfEdges =0;
 let totalWeight =0;
 
 
-let prims = true;
+let prims = false;
 let nodes = [];
 let displayNodes = [];
 let edges = [];
@@ -89,13 +89,7 @@ function insertGraphNode(event)
     nodes.push(newNode);
 
     numberOfNodes++;
-    // console.log(centreY);
-    // console.log(centreY);
-    // let textBox = document.createElement('h4');
-    // let coordinates = document.createTextNode(`x: ${centreX} y : ${centreY}`);
-    // textBox.append(coordinates);
-    // document.body.appendChild(textBox);
-
+    
 }
 
 function inputAdjacencyMatrix()
@@ -158,12 +152,6 @@ function inputAdjacencyMatrix()
         }
         edgeTable.appendChild(newRow);
     }
-    // submitButton = document.createElement('button');
-    // submitButton.appendChild(document.createTextNode('Submit Matrix'));
-    // submitButton.setAttribute('id', 'submit-matrix-btn');
-    // submitButton.setAttribute('onclick','createEdges()');
-    // edgeForm.appendChild(submitButton);
-
 }
 function createEdges()
 {
@@ -180,7 +168,6 @@ function createEdges()
             {
                 adjacencyMatrix[i][j]= currentCell.value;
             }
-            //console.log(currentCell);
         }
     }
 
@@ -231,17 +218,51 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+
+function parentOf( n )
+{
+    if(parents[n].value ==-1) return n;
+    return  parents[n].value = parentOf(parents[n].value);
+}
+
+function union( a, b)
+{
+    let x = parentOf(a);
+    let y = parentOf(b);
+    if(x!=y)
+    {
+        if(parents[x].rank < parents[y].rank)
+        {
+            parents[x].value = y;
+        }
+        else if(parents[x].rank > parents[y].rank)
+        {
+            parents[y].value = x;
+        }
+        else
+        {
+            parents[y].value = x;
+            parents[x].rank++;
+        }
+    }
+}
+
 async function executeAlgorithm()
 {
     if(algorithmExecuted || !edgesCreated) return;
     else algorithmExecuted = true;
-    if(prims)
+
+    let algo = document.querySelector('input[name="algorithm"]:checked');
+    console.log(algo.value);
+    if(algo.value == "Prim's")
     {
         scanningNode = 0;
         nodes[0].status = 1;
         displayNodes[0].setAttribute('fill','orange');
         numberOfVisitedNodes = 1;
         currentEdges = [];
+        await sleep(1000);
         while(numberOfVisitedNodes<numberOfNodes && vertexFound)
         {
             vertexFound = false;
@@ -254,14 +275,16 @@ async function executeAlgorithm()
                     
                     let edgeObject = {e: edges[i], w: edges[i].weight , index:i}
                     edges[i].status = 1;
+                    displayEdges[i].style.stroke = "blue";
+                    await sleep(200);
                     currentEdges.push(edgeObject);
                     
 
                 }
             }
+            await sleep(1000);
             
             currentEdges.sort((a,b)=>{return a.w - b.w});
-            console.log(JSON.stringify(currentEdges));
             for(let i =0;i<currentEdges.length;i++)
             {
                 if(nodes[currentEdges[i].e.v1].status==1)
@@ -273,21 +296,19 @@ async function executeAlgorithm()
                     scanningNode = currentEdges[i].e.v1;
                 }
 
-                //if(numberOfVisitedNodes==3) console.log(nodes[scanningNode].status);
+
                 if(nodes[scanningNode].status==0)
                 {
                     vertexFound = true;
                     displayNodes[scanningNode].setAttribute('fill', 'orange');
                     nodes[scanningNode].status = 1;
-                   // console.log(nodes[scanningNode].status);
                     displayEdges[currentEdges[i].index].style.stroke = "black";
                     edges[currentEdges[i].index].status = 2;
                     totalWeight += +currentEdges[i].w;
                     currentEdges.splice(i,1);
                     numberOfVisitedNodes++;
                     
-                    await sleep(500);
-                    console.log(numberOfVisitedNodes);
+                    await sleep(1000);
                     
                     break;
                 }
@@ -295,16 +316,58 @@ async function executeAlgorithm()
             }
         
         }
-        for(let i = 0; i<edges.length;i++)
+        
+        
+    }
+    else
+    {
+        parents = [];
+        for(let i =0;i<numberOfNodes;i++)
+        {
+            let parentObject = {value:-1, rank:1};
+
+            parents.push(parentObject);
+        }
+        currentEdges = [];
+        numberOfEdgesAdded = 0;
+        for(let i = 0; i<numberOfEdges;i++)
+            {  
+                let edgeObject = {e: edges[i], w: edges[i].weight , index:i}
+                currentEdges.push(edgeObject);
+            }
+        currentEdges.sort((a,b)=>{return a.w - b.w});
+        for(let i = 0; i<numberOfEdges;i++)
+        {
+            let firstVertex = currentEdges[i].e.v1;
+            let secondVertex = currentEdges[i].e.v2;
+            if(parentOf(firstVertex)!=parentOf(secondVertex))
+            {
+                displayNodes[firstVertex].setAttribute('fill', 'orange');
+                nodes[firstVertex].status = 1;
+                displayNodes[secondVertex].setAttribute('fill', 'orange');
+                nodes[secondVertex].status = 1;
+                displayEdges[currentEdges[i].index].style.stroke = "black";
+                edges[currentEdges[i].index].status = 2;
+                totalWeight += +currentEdges[i].w;
+                numberOfEdgesAdded++;
+
+                await sleep(500);
+
+                union(firstVertex, secondVertex);
+                
+            }
+
+
+        }
+        
+    }
+    for(let i = 0; i<edges.length;i++)
         {
             if(edges[i].status!=2)
             {
-                console.log("hello")
                 displayEdges[i].style.visibility = "hidden";
                 edgeWeightTexts[i].style.visibility = "hidden";
             }
         }
         console.log(totalWeight);
-        
-    }
 }
