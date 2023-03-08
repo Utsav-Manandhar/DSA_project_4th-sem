@@ -4,6 +4,7 @@ class graphNode
     {
         this.x = x;
         this.y = y;
+        this.status = 0;
     }
 }
 class graphEdge
@@ -13,18 +14,27 @@ class graphEdge
         this.v1 = v1;
         this.v2 = v2;
         this.weight = weight;
+        this.status = 0;
     }
 }
 let numberOfNodes = 0;
+let numberOfEdges =0;
+let totalWeight =0;
 
 
+let prims = true;
 let nodes = [];
 let displayNodes = [];
 let edges = [];
+let edgeWeightTexts = [];
 let displayEdges =[];
+
+
 let nodesPlaced = false;
 let edgesEntered = false;
 let edgesCreated = false;
+let algorithmExecuted = false;
+let vertexFound  = true;
 
 
 
@@ -111,7 +121,6 @@ function inputAdjacencyMatrix()
     topRow = document.createElement('tr');
     edgeTable.appendChild(topRow);
     topRow.appendChild(document.createElement('th'));
-    console.log("hello");
     
     for(let i =0; i< numberOfNodes;i++)
     {
@@ -125,7 +134,6 @@ function inputAdjacencyMatrix()
     
     for(let i =0;i<numberOfNodes;i++)
     {
-        console.log(i);
         newRow = document.createElement('tr');
         
         numberingCell = document.createElement('th');
@@ -150,16 +158,17 @@ function inputAdjacencyMatrix()
         }
         edgeTable.appendChild(newRow);
     }
-    submitButton = document.createElement('button');
-    submitButton.appendChild(document.createTextNode('Submit Matrix'));
-    submitButton.setAttribute('id', 'submit-matrix-btn');
-    submitButton.setAttribute('onclick','createEdges()');
-    edgeForm.appendChild(submitButton);
+    // submitButton = document.createElement('button');
+    // submitButton.appendChild(document.createTextNode('Submit Matrix'));
+    // submitButton.setAttribute('id', 'submit-matrix-btn');
+    // submitButton.setAttribute('onclick','createEdges()');
+    // edgeForm.appendChild(submitButton);
 
 }
 function createEdges()
 {
-    if(edgesCreated) return;
+    if(edgesCreated || !edgesEntered) return;
+    else edgesCreated = true;
     adjacencyMatrix = [...Array(numberOfNodes)].map(e => Array(numberOfNodes).fill(0));
     for(let i=0;i<numberOfNodes;i++)
     {
@@ -199,6 +208,10 @@ function createEdges()
                 edgeWeight.appendChild(document.createTextNode(`${adjacencyMatrix[i][j]}`));
                 edgeWeight.setAttribute('fill','blue');
                 edgesSVG.appendChild(edgeWeight);
+                edgeWeightTexts.push(edgeWeight);
+
+
+                numberOfEdges++;
 
 
                 
@@ -210,5 +223,88 @@ function createEdges()
                 edges.push(newEdge);
             }
         }
+    }
+    
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function executeAlgorithm()
+{
+    if(algorithmExecuted || !edgesCreated) return;
+    else algorithmExecuted = true;
+    if(prims)
+    {
+        scanningNode = 0;
+        nodes[0].status = 1;
+        displayNodes[0].setAttribute('fill','orange');
+        numberOfVisitedNodes = 1;
+        currentEdges = [];
+        while(numberOfVisitedNodes<numberOfNodes && vertexFound)
+        {
+            vertexFound = false;
+            
+            for(let i = 0; i<numberOfEdges;i++)
+            {
+                
+                if((edges[i].v1 == scanningNode || edges[i].v2==scanningNode)&& edges[i].status==0)
+                {
+                    
+                    let edgeObject = {e: edges[i], w: edges[i].weight , index:i}
+                    edges[i].status = 1;
+                    currentEdges.push(edgeObject);
+                    
+
+                }
+            }
+            
+            currentEdges.sort((a,b)=>{return a.w - b.w});
+            console.log(JSON.stringify(currentEdges));
+            for(let i =0;i<currentEdges.length;i++)
+            {
+                if(nodes[currentEdges[i].e.v1].status==1)
+                {
+                    scanningNode = currentEdges[i].e.v2;
+                }
+                else
+                {
+                    scanningNode = currentEdges[i].e.v1;
+                }
+
+                //if(numberOfVisitedNodes==3) console.log(nodes[scanningNode].status);
+                if(nodes[scanningNode].status==0)
+                {
+                    vertexFound = true;
+                    displayNodes[scanningNode].setAttribute('fill', 'orange');
+                    nodes[scanningNode].status = 1;
+                   // console.log(nodes[scanningNode].status);
+                    displayEdges[currentEdges[i].index].style.stroke = "black";
+                    edges[currentEdges[i].index].status = 2;
+                    totalWeight += +currentEdges[i].w;
+                    currentEdges.splice(i,1);
+                    numberOfVisitedNodes++;
+                    
+                    await sleep(500);
+                    console.log(numberOfVisitedNodes);
+                    
+                    break;
+                }
+
+            }
+        
+        }
+        for(let i = 0; i<edges.length;i++)
+        {
+            if(edges[i].status!=2)
+            {
+                console.log("hello")
+                displayEdges[i].style.visibility = "hidden";
+                edgeWeightTexts[i].style.visibility = "hidden";
+            }
+        }
+        console.log(totalWeight);
+        
     }
 }

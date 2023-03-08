@@ -36,7 +36,7 @@
     
     stroke: red;
     stroke-width: 5;
-
+   
 }
 
 #input-form
@@ -70,6 +70,10 @@ tr,td, th
 }
 th
 {
-    width: 24px;
-    height: 24px;
+    width: 30px;
+    height: 30px;
+}
+.control-btn
+{
+    display: inline;
 }
