@@ -39,18 +39,23 @@ button:hover
     padding: 5px;
     height: 50px;
 }
+.credits
+{
+    text-align: center;
+    color:rgb(70, 251, 15);
+}
 
 #algo-selector,#speed-selector
 {
     text-align: center;
     margin:2px;
-    padding:10px;
+    padding:10px ;
     border: 2px solid blue;
     border-radius: 3px;
     display: inline-block;
     color: black;
     background-image: linear-gradient(aqua,rgb(234, 247, 4));  
-    width: 300px;
+    width: 250px;
     box-shadow: 2px 3px 7px 0px white;
     border-radius: 5px;
 }
