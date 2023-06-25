@@ -22,7 +22,7 @@ let numberOfEdges =0;
 let totalWeight =0;
 
 
-let prims = false;
+
 let nodes = [];
 let displayNodes = [];
 let edges = [];
@@ -281,6 +281,21 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+
+
+function nextPromise() {
+    let nextButton = document.getElementById('next-btn');
+    return new Promise(resolve => {
+        nextButton.addEventListener('click', resolve)
+    });
+}
+
+
+
+
+    
+
+
 function parentOf( n )
 {
     if(parents[n].value ==-1) return n;
@@ -315,6 +330,7 @@ async function executeAlgorithm()
     else algorithmExecuted = true;
 
     let algo = document.querySelector('input[name="algorithm"]:checked');
+    let mode = document.querySelector('input[name="mode"]:checked');
     if(algo.value == "Prim's")
     {
         scanningNode = 0;
@@ -322,11 +338,14 @@ async function executeAlgorithm()
         displayNodes[0].style.fill ='url(#orangeRadialGradient)';
         numberOfVisitedNodes = 1;
         currentEdges = [];
-        await sleep(1000);
+        await sleep(500);
         while(numberOfVisitedNodes<numberOfNodes && vertexFound)
         {
+            if(mode.value == "single")
+                await nextPromise();
+
+
             vertexFound = false;
-            
             for(let i = 0; i<numberOfEdges;i++)
             {
                 
@@ -342,7 +361,7 @@ async function executeAlgorithm()
 
                 }
             }
-            await sleep(1000);
+            await sleep(500);
             
             currentEdges.sort((a,b)=>{return a.w - b.w});
             for(let i =0;i<currentEdges.length;i++)
@@ -367,7 +386,7 @@ async function executeAlgorithm()
                     currentEdges.splice(i,1);
                     numberOfVisitedNodes++;
                     
-                    await sleep(1000);
+                    await sleep(500);
                     
                     break;
                 }
@@ -403,12 +422,14 @@ async function executeAlgorithm()
                 nodes[firstVertex].status = 1;
                 displayNodes[secondVertex].style.fill ='url(#orangeRadialGradient)';
                 nodes[secondVertex].status = 1;
-                displayEdges[currentEdges[i].index].style.stroke = "url(#yellowLinearGradient)";
+                displayEdges[currentEdges[i].index].style.stroke = "url(#blueLinearGradient)";
                 edges[currentEdges[i].index].status = 2;
                 totalWeight += +currentEdges[i].w;
                 numberOfEdgesAdded++;
 
-                await sleep(1000);
+                await sleep(500);
+                if(mode.value == "single")
+                    await nextPromise();
 
                 union(firstVertex, secondVertex);
             }
@@ -426,6 +447,10 @@ async function executeAlgorithm()
             {
                 displayEdges[i].classList.add("hidden-element");
                 edgeWeightTexts[i].classList.add("hidden-element");
+            }
+            else
+            {
+                displayEdges[i].style.stroke = "url(#yellowLinearGradient)";
             }
         }
         totalWeightText = document.createElementNS('http://www.w3.org/2000/svg','text');

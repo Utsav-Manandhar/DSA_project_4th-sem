@@ -6,12 +6,23 @@
         <script src = "MSTcontrol.js"></script>
     </head>
     <body onload="createSVGwindow()" >
-        <button class="control-btn" onclick="inputAdjacencyMatrix()"><b> Enter Edges </b></button>
-        <button class="control-btn" onclick="createEdges()"> <b>Join Edges </b></button>
-        <button class="control-btn" onclick="executeAlgorithm()"><b> Exexute Algorithm</b> </button>
-        <div id="algo-selector">
-            <input type = "radio"  name="algorithm" value = "Prim's" checked><b>Prim's</b></form>
-            <input type = "radio"  name="algorithm" value = "Kruskal's"><b>Kruskal's</b></form>
+        <div class="control-board">
+            <div class = "buttons">
+                <button class="control-btn" onclick="inputAdjacencyMatrix()"><b> Enter Edges </b></button>
+                <button class="control-btn" onclick="createEdges()"> <b>Join Edges </b></button>
+                <button class="control-btn" onclick="executeAlgorithm()"><b> Exexute Algorithm</b> </button>
+                <button class="control-btn" id ="next-btn" ><b>Next Step</b></button>
+            </div>
+            <div class="selectors">
+                <div id="algo-selector">
+                    <input type = "radio"  name="algorithm" value = "Prim's" checked><b>Prim's</b></form>
+                    <input type = "radio"  name="algorithm" value = "Kruskal's"><b>Kruskal's</b></form>
+                </div>  
+                <div id="speed-selector">
+                    <input type = "radio"  name="mode" value = "single" checked><b>Single Step</b></form>
+                    <input type = "radio"  name="mode" value = "continuous"><b>Continuous</b></form>
+                </div>
+            </div>
         </div>  
     </body>
 </html>
